@@ -18,6 +18,7 @@
 import io
 import os
 import os.path as osp
+import argparse
 
 from setuptools import find_packages, setup
 
@@ -34,6 +35,12 @@ REQUIRES_PYTHON = '>=3.6.0'
 VERSION = '0.1.0'
 
 here = os.path.abspath(os.path.dirname(__file__))
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--cuda_samples_dir', type=str, default="/home/kristijan/cuda-samples/")
+args, unknown = parser.parse_known_args()
+
+cuda_samples_include_path = os.path.join(args.cuda_samples_dir, 'Common/')
 
 try:
     FileNotFoundError
@@ -58,7 +65,8 @@ else:
 bvh_src_files = ['src/bvh.cpp', 'src/bvh_cuda_op.cu']
 bvh_include_dirs = torch.utils.cpp_extension.include_paths() + [
     'include',
-    osp.expandvars('$CUDA_SAMPLES_INC')]
+    cuda_samples_include_path
+]
 
 bvh_extra_compile_args = {'nvcc': ['-DPRINT_TIMINGS=0', '-DDEBUG_PRINT=0',
                                    '-DERROR_CHECKING=1',
